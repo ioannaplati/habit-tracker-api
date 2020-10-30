@@ -1,10 +1,13 @@
 const express = require('express');
+const cors = require('cors');
 const errorHandler = require('../middleware/errorHandler');
 const habitRouter = require('./habit');
 const treatRouter = require('./treat');
 const trackRouter = require('./track');
 
 const router = express.Router();
+
+router.use(cors());
 
 router.use('/v1/habits', habitRouter);
 router.use('/v1/treats', treatRouter);

@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(api);
 
-// Set force: true to re-create all models
+// Set force: true to re-create all tables
 db.sync({})
   .then(async () =>
     app.listen(PORT, () => {

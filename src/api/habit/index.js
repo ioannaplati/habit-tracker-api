@@ -9,7 +9,8 @@ const router = express.Router();
 //Create application/json parser
 const jsonParser = bodyParser.json();
 
-router.get('/', controller.getAllHabits);
+router.get('/', controller.getHabits);
+router.get('/archived', controller.getArchivedHabits);
 router.get('/:id', controller.getHabitById);
 
 router.post(
@@ -19,7 +20,12 @@ router.post(
   controller.addHabit,
 );
 
-// router.patch('/:id', jsonParser, controller.editHabit);
+router.patch(
+  '/:id',
+  jsonParser,
+  validator(schemas.editHabit, 'body'),
+  controller.editHabit,
+);
 router.patch('/archive/:id', controller.toggleHabitArchive);
 
 // delete-all: for debugging purposes

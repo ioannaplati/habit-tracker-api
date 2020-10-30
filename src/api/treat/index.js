@@ -9,6 +9,7 @@ const jsonParser = bodyParser.json();
 const router = express.Router();
 
 router.get('/', controller.getAllTreats);
+router.get('/archived', controller.getArchivedTreats);
 
 router.post(
   '/',
@@ -18,6 +19,12 @@ router.post(
 );
 
 router.patch('/archive/:id', controller.toggleTreatArchive);
+router.patch(
+  '/:id',
+  jsonParser,
+  validator(schemas.editTreat, 'body'),
+  controller.editTreat,
+);
 
 // delete-all: for debugging purposes
 router.delete('/all', controller.deleteAll);

@@ -1,10 +1,19 @@
 const { models } = require('../../models');
 const { NotFound } = require('../../utils/errors');
 
-const getAllHabits = async (_, res, next) => {
+const getHabits = async (_, res, next) => {
   try {
-    let habits = await models.Habit.findAll();
+    let habits = await models.Habit.findAll({ where: { archived: false } });
     res.json(habits);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getArchivedHabits = async (_, res, next) => {
+  try {
+    let archived = await models.Habit.findAll({ where: { archived: true } });
+    res.json(archived);
   } catch (err) {
     next(err);
   }
@@ -34,8 +43,20 @@ const addHabit = async (req, res, next) => {
   }
 };
 
-// TODO
-const editHabit = () => {};
+const editHabit = async (req, res, next) => {
+  try {
+    let id = req.params.id;
+    let habit = await models.Habit.findByPk(id);
+    if (!habit) {
+      throw new NotFound('Habit was not found.');
+    }
+
+    await models.Habit.update(req.body, { where: { id } });
+    res.send('Habit updated.');
+  } catch (err) {
+    next(err);
+  }
+};
 
 const toggleHabitArchive = async (req, res, next) => {
   try {
@@ -83,7 +104,8 @@ module.exports = {
   deleteAll,
   deleteById,
   editHabit,
-  getAllHabits,
+  getArchivedHabits,
   getHabitById,
+  getHabits,
   toggleHabitArchive,
 };

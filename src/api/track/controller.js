@@ -87,7 +87,7 @@ module.exports = {
   addTrack,
   deleteAll,
   deleteById,
-  getAllTracking,
   getAllTrackForDates,
+  getAllTracking,
   getSpecificTrackForDates,
 };
