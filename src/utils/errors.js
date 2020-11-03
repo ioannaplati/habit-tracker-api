@@ -11,7 +11,7 @@ class GeneralError extends Error {
     if (this instanceof NotFound) {
       return 404;
     }
-    if (this instanceof InvalidSchema) {
+    if (this instanceof UnprocessableEntity) {
       return 422;
     }
 
@@ -21,11 +21,11 @@ class GeneralError extends Error {
 
 class BadRequest extends GeneralError {}
 class NotFound extends GeneralError {}
-class InvalidSchema extends GeneralError {}
+class UnprocessableEntity extends GeneralError {}
 
 module.exports = {
   BadRequest,
   GeneralError,
-  InvalidSchema,
   NotFound,
+  UnprocessableEntity,
 };

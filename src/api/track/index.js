@@ -9,15 +9,13 @@ const jsonParser = bodyParser.json();
 
 router.get(
   '/',
-  jsonParser,
-  validator(schemas.getTrackForDates, 'body'),
+  validator(schemas.getTrackForDates, 'query'),
   controller.getAllTrackForDates,
 );
 router.get('/all', controller.getAllTracking);
 router.get(
   '/:habitId',
-  jsonParser,
-  validator(schemas.getTrackForDates, 'body'),
+  validator(schemas.getTrackForDates, 'query'),
   controller.getSpecificTrackForDates,
 );
 

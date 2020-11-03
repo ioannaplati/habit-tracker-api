@@ -23,7 +23,7 @@ const addTreat = async (req, res, next) => {
   try {
     const treat = await models.Treat.create(req.body);
     console.log("Treat's auto-generated ID:", treat.id);
-    res.json({ new_treat: req.body });
+    res.json(req.body);
   } catch (err) {
     next(err);
   }

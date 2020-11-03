@@ -1,4 +1,4 @@
-const { InvalidSchema } = require('../utils/errors');
+const { UnprocessableEntity } = require('../utils/errors');
 
 function validator(schema, property) {
   return function (req, _, next) {
@@ -11,7 +11,7 @@ function validator(schema, property) {
     const { details } = error;
     const message = details.map(detail => detail.message).join(',');
 
-    throw new InvalidSchema(message);
+    throw new UnprocessableEntity(message);
   };
 }
 

@@ -1,6 +1,10 @@
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
+const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
 const { models } = require('../../models');
-const { NotFound } = require('../../utils/errors');
+const { NotFound, UnprocessableEntity } = require('../../utils/errors');
+
+dayjs.extend(utc);
 
 const getAllTracking = async (_, res, next) => {
   try {
@@ -13,11 +17,18 @@ const getAllTracking = async (_, res, next) => {
 
 const getAllTrackForDates = async (req, res, next) => {
   try {
-    let { startDate, endDate } = req.body;
+    // Request contains dates in format 'YYYY-MM-DD'
+    let { startDate, endDate } = req.query;
+
+    startDate = dayjs(new Date(startDate)).utc().format();
+    endDate = dayjs(new Date(endDate)).utc().endOf('day').format();
+    console.log(`FROM: ${startDate} TO: ${endDate}`);
 
     let tracking = await models.Track.findAll({
       where: {
-        date: { [Op.between]: [new Date(startDate), new Date(endDate)] },
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
       },
       order: [['date', 'DESC']],
     });
@@ -30,12 +41,21 @@ const getAllTrackForDates = async (req, res, next) => {
 const getSpecificTrackForDates = async (req, res, next) => {
   try {
     let id = req.params.habitId;
-    let { startDate, endDate } = req.body;
+    // Request contains dates in format 'YYYY-MM-DD'
+    let { startDate, endDate } = req.query;
+
+    startDate = dayjs(new Date(startDate)).utc().format();
+    endDate = dayjs(new Date(endDate)).utc().endOf('day').format();
+    console.log(`FROM: ${startDate} TO: ${endDate}`);
 
     let tracking = await models.Track.findAll({
       where: {
         [Op.and]: [
-          { date: { [Op.between]: [new Date(startDate), new Date(endDate)] } },
+          {
+            date: {
+              [Op.between]: [startDate, endDate],
+            },
+          },
           { habitId: id },
         ],
       },
@@ -49,10 +69,34 @@ const getSpecificTrackForDates = async (req, res, next) => {
 
 const addTrack = async (req, res, next) => {
   try {
+    // Request body contains date in ISO format
+    let habitId = req.body.habitId;
+    let dateOnly = dayjs(req.body.date).utc().format('YYYY-MM-DD');
+    console.log(dateOnly);
+
+    // Check before adding if habit has already been tracked for this day.
+    let check = await models.Track.findOne({
+      where: {
+        [Op.and]: [
+          { habitId },
+          Sequelize.where(
+            Sequelize.fn('date', Sequelize.col('date')),
+            dateOnly,
+          ),
+        ],
+      },
+    });
+
+    if (check) {
+      throw new UnprocessableEntity(
+        'This habit has already been tracked for the day!',
+      );
+    }
+
     const track = await models.Track.create(req.body);
     console.log("Track's auto-generated ID:", track.id);
 
-    res.json({ latest_track: req.body });
+    res.json(req.body);
   } catch (err) {
     next(err);
   }

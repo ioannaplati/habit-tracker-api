@@ -37,7 +37,7 @@ const addHabit = async (req, res, next) => {
     const habit = await models.Habit.create(req.body);
     console.log("Habit's auto-generated ID:", habit.id);
 
-    res.json({ new_habit: req.body });
+    res.json(req.body);
   } catch (err) {
     next(err);
   }

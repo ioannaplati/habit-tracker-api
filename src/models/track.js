@@ -1,17 +1,22 @@
 const track = (sequelize, DataTypes) => {
-  const Track = sequelize.define('Track', {
-    habitId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+  const Track = sequelize.define(
+    'Track',
+    {
+      date: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      cashed: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
     },
-    date: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-  });
+    { timestamps: false },
+  );
 
   Track.associate = models => {
-    Track.belongsTo(models.Habit);
+    Track.belongsTo(models.Habit, { foreignKey: 'habitId' });
   };
 
   return Track;
