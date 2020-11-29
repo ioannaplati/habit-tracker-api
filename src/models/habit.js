@@ -30,6 +30,8 @@ const habit = (sequelize, DataTypes) => {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     });
+
+    Habit.belongsTo(models.User, { foreignKey: 'userId' });
   };
 
   return Habit;

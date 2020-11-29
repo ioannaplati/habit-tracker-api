@@ -17,6 +17,7 @@ const track = (sequelize, DataTypes) => {
 
   Track.associate = models => {
     Track.belongsTo(models.Habit, { foreignKey: 'habitId' });
+    Track.belongsTo(models.User, { foreignKey: 'userId' });
   };
 
   return Track;

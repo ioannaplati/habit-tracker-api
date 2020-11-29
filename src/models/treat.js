@@ -19,6 +19,10 @@ const treat = (sequelize, DataTypes) => {
     { timestamps: false },
   );
 
+  Treat.associate = models => {
+    Treat.belongsTo(models.User, { foreignKey: 'userId' });
+  };
+
   return Treat;
 };
 

@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const { Sequelize, DataTypes } = require('sequelize');
 const modelDefiners = [
+  require('./user'),
   require('./habit'),
   require('./treat'),
   require('./track'),
